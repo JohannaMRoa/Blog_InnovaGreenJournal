@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <style>
+
+        .footer-box1 {
+            width: 100%;
+            text-align: center;
+            padding: 3rem 0 4rem;
+        }
+
+        /* Social media icon */
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .footer-social img {
+            width: 35px;
+            opacity: .85;
+            transition: .3s ease;
+        }
+
+        .footer-social img:hover {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
+        .footer-box {
+            width: 90%;
+            margin: auto;
+            background-color: rgba(133, 55, 164, 0.45);
+            padding: 1.8rem;
+            border-radius: 30px;
+            backdrop-filter: blur(3px);
+            color: white;
+            box-shadow: 0 0 35px rgba(0,0,0,0.28);
+        }
+
+        .sitefooter_p {
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        @media(max-width:700px){
+            .footer-social { gap: 1.2rem; }
+            .footer-social img{ width: 28px; }
+            .footer-box{ padding: 1.3rem; }
+            .sitefooter_p{ font-size: 10px; }
+        }
+        
+        </style>
+    </head>
+<body>
+
+<footer class="footer-box1">
+
+        <div class="footer-social">
+            <a href="#"><img src="/images/facebook.svg" alt="Facebook"></a>
+            <a href="#"><img src="/images/instagram.svg" alt="Instagram"></a>
+            <a href="#"><img src="/images/twitter.svg" alt="Twitter"></a>
+            <a href="#"><img src="/images/youtube.svg" alt="Youtube"></a>
+        </div>
+
+    <div class="footer-box">
+        <p class="sitefooter_p">
+            ©2025 Sony Music Entertainment. All Rights Reserved.
+            LEGACY and the “L Legacy” logo are registered trademarks of Sony Music Entertainment.
+            Send Us Feedback | Privacy Policy | How We Use Your Data | Do Not Sell My Personal Information |
+            Your California Privacy Rights | Terms and Conditions | Why Music Matters
+        </p>
+      
+    </div>
+
+</footer>
+
+</body>
+</html>

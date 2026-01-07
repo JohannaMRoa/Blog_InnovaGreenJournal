@@ -1,0 +1,83 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Retrieve cookies and handle redirection
+const { cookies, redirect } = Astro;
+
+// Check if authentication tokens are present
+const accessToken = cookies.get("sb-access-token");
+const refreshToken = cookies.get("sb-refresh-token");
+
+// Redirect to the dashboard if the user is already authenticated
+if (accessToken && refreshToken) {
+  return redirect("/dashboard");
+}
+---
+
+<Layout title="Sign in">
+  <!-- Background wrapper -->
+  <section class="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
+
+    <!-- Card -->
+    <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-green-900/10 p-8">
+
+      <!-- Title -->
+      <h1 class="text-3xl font-semibold text-center text-green-900">
+        Sign in
+      </h1>
+
+      <p class="text-center text-sm text-green-900/60 mt-2">
+        Welcome back to Innova Green Journal
+      </p>
+
+      <!-- Form -->
+      <form action="/api/auth/signin" method="post" class="mt-8 space-y-5">
+
+        <div>
+          <label for="email" class="block text-sm text-green-900/70 mb-1">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            required
+            placeholder="you@example.com"
+            class="w-full bg-transparent border-b border-green-900/20 py-2 focus:outline-none focus:border-green-700"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm text-green-900/70 mb-1">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+            placeholder="••••••••"
+            class="w-full bg-transparent border-b border-green-900/20 py-2 focus:outline-none focus:border-green-700"
+          />
+        </div>
+
+        <!-- Button -->
+        <button
+          type="submit"
+          class="w-full mt-2 bg-green-700 hover:bg-green-800 text-white py-2.5 rounded-md font-medium"
+        >
+          Login
+        </button>
+      </form>
+
+      <!-- Footer link -->
+      <p class="text-center text-sm text-green-900/70 mt-6">
+        New here?
+        <a href="/register" class="text-green-800 font-medium hover:underline">
+          Create an account
+        </a>
+      </p>
+
+    </div>
+  </section>
+</Layout>

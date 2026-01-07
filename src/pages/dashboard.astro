@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+export const prerender = false;
+
+const accessToken = Astro.cookies.get("sb-access-token")?.value;
+const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
+
+// Si NO hay sesión → afuera
+if (!accessToken || !refreshToken) {
+  return Astro.redirect("/signin");
+}
+---
+
+<Layout title="Dashboard">
+  <main class="max-w-4xl mx-auto px-6 py-16">
+    <h1 class="text-3xl font-semibold text-green-900">Dashboard</h1>
+    <p class="mt-2 text-green-900/70">
+      You’re signed in ✅
+    </p>
+
+    <div class="mt-8 flex gap-4">
+      <a
+        href="/newpost"
+        class="px-4 py-2 rounded-md bg-green-700 text-white hover:bg-green-800 transition"
+      >
+        Create new post
+      </a>
+
+      <a
+        href="/api/auth/signout"
+        class="px-4 py-2 rounded-md border border-green-900/20 hover:bg-[#DAFFA8]/40 transition"
+      >
+        Sign out
+      </a>
+    </div>
+  </main>
+</Layout>

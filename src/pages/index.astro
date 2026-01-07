@@ -1,16 +1,81 @@
 ---
+export const prerender = false;
 
+import Layout from "../layouts/Layout.astro";
+import { supabase } from "../lib/supabase";
+
+type Post = {
+  id: number;
+  title: string;
+  created_at: string;
+};
+
+// Traer los últimos 5 posts (más recientes primero)
+const { data: lastPosts, error } = await supabase
+  .from("Post")
+  .select("id, title, created_at")
+  .order("created_at", { ascending: false })
+  .limit(5);
+
+if (error) {
+  console.error(error);
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Home | Innova Green Journal" current="">
+  <!-- HERO (tu hero actual) -->
+  <section class="relative h-[70vh]">
+    <img
+      src="/index_picture.png"
+      alt="Innova Green Journal cover"
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+  </section>
+
+  <!-- WELCOME (tu sección pistacho, si ya la tenés) -->
+  <section class="bg-[#DAFFA8]">
+    <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+      <h2 class="text-3xl font-semibold text-green-900 mb-6">
+        Welcome to Innova Green Journal
+      </h2>
+      <p class="text-green-900/80 text-lg leading-relaxed">
+        A place to explore everything about plants, connect with people who share your passion,
+        read curated news, and follow real plant journeys from our community.
+        <br /><br />
+      Discover stories, tips, and real journeys from our green community.
+      </p>
+    </div>
+  </section>
+
+  <!-- LAST 5 POSTS -->
+<section class="bg-[#DAFFA8]/35 py-12">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-2xl font-semibold text-green-900">Latest posts</h2>
+
+    <div class="mt-6 grid gap-4">
+      {lastPosts?.length ? (
+        lastPosts.map((p) => (
+          <a
+            href="/posts"
+            class="bg-white border border-green-900/10 rounded-lg p-4 hover:border-green-700 transition"
+          >
+            <p class="font-medium text-green-900">{p.title}</p>
+            <p class="text-sm text-green-900/60">
+              {new Date(p.created_at).toLocaleDateString()}
+            </p>
+          </a>
+        ))
+      ) : (
+        <p class="text-green-900/70 mt-4">No posts yet.</p>
+      )}
+    </div>
+  </div>
+</section>
+
+
+</Layout>
+
+
+
+
+

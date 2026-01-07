@@ -1,0 +1,26 @@
+---
+import "../styles/global.css";
+import Navigation from "../components/Navigation.astro";
+
+const { title = "InnovaGreen Journal" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InnovaGreen Journal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  </head>
+
+  <body class="font-[Quicksand] bg-green-50 text-gray-800">
+    <Navigation />
+    <slot />
+  </body>
+
+  
+</html>
