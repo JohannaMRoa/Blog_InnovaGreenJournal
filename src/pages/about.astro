@@ -1,29 +1,53 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Navigation from "../components/Navigation.astro";
 ---
-<Layout title="Home | Plant Blog" current="">
 
-  <!-- Hero section -->
-  <section class="relative h-[70vh] flex items-center justify-center">
+<Layout title="About | Innova Green Journal">
+  <main class="max-w-6xl mx-auto px-6 py-20">
     
-    <!-- Image placeholder -->
-    <div class="absolute inset-0 bg-gray-200">
-      <!-- 
-        Acá después reemplazás por una imagen real, por ejemplo:
-        <img src="/images/monstera.jpg" class="w-full h-full object-cover" />
-      -->
-    </div>
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
+      
+      <!-- IMAGE PLACEHOLDER -->
+      <div>
+        <!-- Reemplazá src cuando tengas tu imagen -->
+        <img
+          src="/about_pic.png"
+          alt="Plants and nature"
+          class="w-full max-w-xl rounded-2xl "
 
-    <!-- Overlay (opcional, muy sutil) -->
-    <div class="absolute inset-0 bg-white/40"></div>
+        />
+      </div>
 
-    <!-- Title -->
-    <h1 class="relative text-5xl font-semibold tracking-wide text-gray-800">
-     Innova Green Journal
-    </h1>
+      <!-- TEXT CONTENT -->
+      <div>
+        <h1 class="text-3xl font-semibold text-green-900 tracking-wide">
+          About
+        </h1>
 
+        <p></p>
 
+        <p class="text-green-900/80 leading-relaxed mb-4" >
+          Innova Green Journal is a place to explore everything about plants from
+          everyday care and seasonal tips to deeper stories about growth, patience,
+          and connection with nature.
+        </p>
 
-  </section>
+        <p class="text-green-900/80 leading-relaxed mb-4">
+          Here, plant lovers from different backgrounds come together to share their
+          experiences, learn from each other, and document their personal green
+          journeys. Whether you are just starting your first plant or already have
+          a thriving indoor jungle, you’ll find inspiration, honest advice, and real
+          stories from people who care deeply about plants.
+        </p>
+
+        <p class="text-green-900/80 leading-relaxed">
+          Through curated articles, community posts, and shared progress, Innova
+          Green Journal aims to be more than a blog — it’s a growing space where
+          curiosity, sustainability, and creativity meet. Follow along, connect
+          with others, and watch how small green moments turn into meaningful journeys.
+        </p>
+      </div>
+
+    </section>
+  </main>
 </Layout>

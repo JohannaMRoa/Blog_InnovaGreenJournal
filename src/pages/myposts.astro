@@ -1,0 +1,94 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { supabase } from "../lib/supabase";
+
+export const prerender = false;
+
+// 1) Chequear sesión por cookies
+const accessToken = Astro.cookies.get("sb-access-token")?.value;
+const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
+
+if (!accessToken || !refreshToken) {
+  return Astro.redirect("/signin");
+}
+
+// 2) Obtener user desde Supabase usando accessToken
+const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
+const user = userData?.user;
+
+if (userError || !user) {
+  return Astro.redirect("/signin");
+}
+
+// 3) Traer posts del usuario (nuevo -> viejo)
+const { data: posts, error } = await supabase
+  .from("Post")
+  .select("id, title, created_at")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
+
+const postsList = posts ?? [];
+---
+
+<Layout title="My posts">
+  <main class="max-w-4xl mx-auto px-6 py-14">
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-semibold text-green-900">My posts</h1>
+
+      <a
+        href="/newpost"
+        class="ml-2 px-5 py-2 text-sm font-medium rounded-md
+                  bg-green-700 text-white
+                  hover:bg-green-800
+                  transition"
+      >
+        + New post
+      </a>
+    </div>
+
+
+    {error && (
+      <p class="mt-4 text-red-600 text-sm">
+        Could not load posts: {error.message}
+      </p>
+    )}
+
+    <div class="mt-8 space-y-4">
+      {postsList.length ? (
+        postsList.map((p) => (
+          <div
+            class="bg-white border border-green-900/10 rounded-xl p-5 flex items-center justify-between"
+          >
+            <div>
+              <p class="font-medium text-green-900">{p.title}</p>
+              <p class="text-sm text-green-900/60">
+                {new Date(p.created_at).toLocaleDateString()}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <a
+                class="text-sm underline hover:text-green-700"
+                href={`/posts/${p.id}`}
+              >
+               Open
+              </a>
+
+              <form action="/api/auth/posts/delete" method="post">
+                <input type="hidden" name="id" value={p.id} />
+                <button
+                  type="submit"
+                  class="text-sm underline hover:text-red-600"
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p class="text-green-900/70 mt-6">No posts yet.</p>
+      )}
+    </div>
+  </main>
+</Layout>

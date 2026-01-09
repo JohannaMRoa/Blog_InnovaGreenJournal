@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-export const prerender = true;
+export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token")?.value;
 const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
@@ -14,7 +14,7 @@ if (!accessToken || !refreshToken) {
 
 <Layout title="Create post">
 
-  <main class="max-w-2xl mx-auto mt-16">
+  <main class="max-w-2xl mx-auto mt-16 pb-32">
     <h1 class="text-2xl font-semibold mb-6">Create a new post</h1>
 
     <form action="/api/auth/posts/create" method="post">

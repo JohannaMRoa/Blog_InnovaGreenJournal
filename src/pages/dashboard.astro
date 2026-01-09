@@ -1,38 +1,203 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { supabase } from "../lib/supabase";
 
-export const prerender = true;
+export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token")?.value;
 const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
+if (!accessToken || !refreshToken) return Astro.redirect("/signin");
 
-// Si NO hay sesión → afuera
-if (!accessToken || !refreshToken) {
-  return Astro.redirect("/signin");
-}
+// 1) User
+const { data: userData } = await supabase.auth.getUser(accessToken);
+const user = userData.user;
+if (!user) return Astro.redirect("/signin");
+
+// 2) Profile (username)
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("username")
+  .eq("id", user.id)
+  .maybeSingle();
+
+const username = profile?.username ?? "your-username";
+
+// 3) Latest posts (your posts)
+const { data: posts } = await supabase
+  .from("Post")
+  .select("id, title, created_at")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false })
+  .limit(5);
 ---
 
 <Layout title="Dashboard">
-  <main class="max-w-4xl mx-auto px-6 py-16">
-    <h1 class="text-3xl font-semibold text-green-900">Dashboard</h1>
-    <p class="mt-2 text-green-900/70">
-      You’re signed in ✅
+  <main class="relative min-h-[calc(100vh-80px)] bg-white px-6 py-14 overflow-hidden">
+    <!-- vines / plants (vos cambiás las imágenes después) -->
+    <img
+      src="/vines-left.png"
+      alt=""
+      class="pointer-events-none select-none absolute left-0 top-0 h-full w-auto opacity-70 hidden md:block"
+    />
+    <img
+      src="/vines-right.png"
+      alt=""
+      class="pointer-events-none select-none absolute right-0 top-0 h-full w-auto opacity-70 hidden md:block"
+    />
+
+    <section class="relative max-w-3xl mx-auto">
+      <div class="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-sm p-10">
+        <h1 class="text-4xl font-semibold text-green-900 text-center">
+          Welcome back,
+        </h1>
+
+        <!-- username block -->
+<div class="mt-4 flex flex-col items-center gap-3 text-green-900/80">
+  <!-- display row -->
+  <div id="username-display" class="flex items-center gap-2">
+    <p class="text-lg">
+      <span class="text-green-900/60">@</span>{username}
     </p>
 
-    <div class="mt-8 flex gap-4">
-      <a
-        href="/newpost"
+    <button
+      id="edit-username-btn"
+      type="button"
+      class="p-2 -m-2 text-gray-500 hover:text-green-700 transition"
+      aria-label="Edit username"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor" stroke-width="1.5" class="h-5 w-5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M16.862 3.487a2.25 2.25 0 0 1 3.182 3.182L7.125 19.588
+          3 21l1.412-4.125L16.862 3.487Z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- edit form (hidden) -->
+  <form
+    id="username-form"
+    action="/api/profile/update"
+    method="post"
+    class="hidden w-full max-w-md"
+  >
+    <div class="flex items-center justify-center gap-2">
+      <input
+        name="username"
+        value={username}
+        required
+        placeholder="e.g. plantlover"
+        class="w-64 bg-transparent border-b border-green-900/20 py-2
+               focus:outline-none focus:border-green-700 text-center"
+      />
+
+      <button
+        type="submit"
         class="px-4 py-2 rounded-md bg-green-700 text-white hover:bg-green-800 transition"
       >
-        Create new post
-      </a>
+        Save
+      </button>
 
-      <a
-        href="/api/auth/signout"
-        class="px-4 py-2 rounded-md border border-green-900/20 hover:bg-[#DAFFA8]/40 transition"
+      <button
+        id="cancel-username-btn"
+        type="button"
+        class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:border-gray-400 transition"
       >
-        Sign out
-      </a>
+        Cancel
+      </button>
     </div>
+  </form>
+</div>
+
+<script>
+  const displayRow = document.getElementById("username-display");
+  const editBtn = document.getElementById("edit-username-btn");
+  const cancelBtn = document.getElementById("cancel-username-btn");
+  const form = document.getElementById("username-form");
+
+  if (displayRow && editBtn && cancelBtn && form) {
+    editBtn.addEventListener("click", () => {
+      displayRow.classList.add("hidden");
+      form.classList.remove("hidden");
+      const input = form.querySelector('input[name="username"]');
+      if (input instanceof HTMLInputElement) input.focus();
+    });
+
+    cancelBtn.addEventListener("click", () => {
+      form.classList.add("hidden");
+      displayRow.classList.remove("hidden");
+    });
+  }
+</script>
+
+        <!-- actions -->
+        <div class="mt-8 flex items-center justify-center gap-3">
+          <a
+            href="/newpost"
+            class="px-6 py-2.5 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800 transition hover:scale-[1.02]"
+          >
+            Create new post
+          </a>
+
+          <a
+            href="/myposts"
+            class="px-6 py-2.5 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:border-green-300 hover:text-green-800 transition"
+          >
+            My posts
+          </a>
+        </div>
+
+        <!-- latest posts list -->
+        <div class="mt-10">
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-green-900">Your latest posts</h2>
+            <a href="/myposts" class="text-sm text-green-800 hover:underline">
+              View all →
+            </a>
+          </div>
+
+          <div class="mt-4 grid gap-3">
+            {posts?.length ? (
+              posts.map((p) => (
+                <a
+                  href={`/posts/${p.id}`}
+                  class="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 hover:border-green-300 hover:bg-white transition"
+                >
+                  <p class="font-medium text-green-900">{p.title}</p>
+                  <p class="text-sm text-green-900/60 mt-1">
+                    {new Date(p.created_at).toLocaleDateString()}
+                  </p>
+                </a>
+              ))
+            ) : (
+              <p class="text-green-900/60 mt-3">
+                You haven’t written any posts yet.
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
+
+  <script>
+    const editBtn = document.getElementById("edit-username-btn");
+    const cancelBtn = document.getElementById("cancel-username-btn");
+    const displayRow = document.getElementById("username-display");
+    const form = document.getElementById("username-form");
+
+    if (editBtn && cancelBtn && displayRow && form) {
+      editBtn.addEventListener("click", () => {
+        displayRow.classList.add("hidden");
+        form.classList.remove("hidden");
+        const input = form.querySelector('input[name="username"]');
+        if (input instanceof HTMLInputElement) input.focus();
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        form.classList.add("hidden");
+        displayRow.classList.remove("hidden");
+      });
+    }
+  </script>
 </Layout>
