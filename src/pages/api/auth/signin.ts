@@ -18,7 +18,6 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
         password
     });
 
-    // Real error from Supabase
 
     if (error) {
         console.log('Supabase error:', error );
@@ -26,7 +25,6 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
 
     }
 
-    // Session is null (e.g., unconfirmed email)
     if (!data.session) {
         console.log('Session is null:', data);
         return new Response("Login successful, but email confirmation is required.", {
@@ -34,7 +32,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
         });
     };
     
-    // Session exists: store tokens
+
     const { access_token, refresh_token } = data.session;
     cookies.set("sb-access-token", access_token, {
     path: "/", httpOnly: true, sameSite: "lax", secure: import.meta.env.PROD,

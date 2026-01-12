@@ -6,7 +6,6 @@ export const prerender = false;
 
 const { id } = Astro.params;
 
-// 🔐 Auth
 const accessToken = Astro.cookies.get("sb-access-token")?.value;
 let user = null;
 
@@ -15,7 +14,7 @@ if (accessToken) {
   user = data.user;
 }
 
-// 📌 Obtener post
+// post
 const { data: post, error: postError } = await supabase
   .from("Post")
   .select("*")
@@ -26,12 +25,13 @@ if (postError || !post) {
   throw new Error("Post not found");
 }
 
-// 💬 Obtener comments
+// comments
 const { data: comments } = await supabase
   .from("Comment")
   .select("*")
   .eq("post_id", Number(id))
   .order("created_at", { ascending: true });
+
 ---
 
 <Layout title={post.title}>
@@ -52,7 +52,8 @@ const { data: comments } = await supabase
       </div>
     </article>
 
-{/* Edit post (solo si es el dueño) */}
+<!-- Owner can edit post -->
+
 {user && post.user_id === user.id && (
   <section class="mb-16">
     <div class="bg-gray-50 border border-gray-200 rounded-2xl shadow-sm p-8">
@@ -68,12 +69,7 @@ const { data: comments } = await supabase
             Title
           </label>
           <input
-            type="text"
-            name="title"
-            value={post.title}
-            required
-            class="w-full border border-green-900/20 rounded-md px-3 py-2
-                   focus:outline-none focus:border-green-700"
+            type="text" name="title" value={post.title} required class="w-full border border-green-900/20 rounded-md px-3 py-2  focus:outline-none focus:border-green-700"
           />
         </div>
 
@@ -81,20 +77,13 @@ const { data: comments } = await supabase
           <label class="block text-sm font-medium text-green-900 mb-1">
             Content
           </label>
-          <textarea
-            name="content"
-            rows="10"
-            required
-            class="w-full border border-green-900/20 rounded-md px-3 py-2
-                   focus:outline-none focus:border-green-700"
+          <textarea  name="content" rows="10" required
+            class="w-full border border-green-900/20 rounded-md px-3 py-2  focus:outline-none focus:border-green-700"
           >{post.content}</textarea>
         </div>
 
         <div class="flex items-center gap-4">
-          <button
-            type="submit"
-            class="bg-green-700 hover:bg-green-800 text-white
-                   px-5 py-2 rounded-md transition"
+          <button type="submit" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-md transition"
           >
             Save changes
           </button>
@@ -115,9 +104,7 @@ const { data: comments } = await supabase
 
     <!-- Comments -->
     <section>
-      <h2 class="text-2xl font-semibold text-green-900 mb-6">
-        Comments
-      </h2>
+      <h2 class="text-2xl font-semibold text-green-900 mb-6"> Comments </h2>
 
       {comments?.length ? (
   <div class="space-y-4">
@@ -136,27 +123,17 @@ const { data: comments } = await supabase
             <div class="flex items-center gap-3">
               <!-- Edit (simple inline) -->
               <details class="text-right">
-                <summary class="cursor-pointer text-sm underline hover:text-green-700">
-                  Edit
-                </summary>
+                <summary class="cursor-pointer text-sm underline hover:text-green-700"> Edit </summary>
 
                 <form action="/api/auth/comments/update" method="post" class="mt-3 space-y-2">
                   <input type="hidden" name="id" value={c.id} />
                   <input type="hidden" name="post_id" value={post.id} />
 
-                  <textarea
-                    name="content"
-                    required
-                    class="w-64 border border-green-900/20 rounded-lg p-2 text-sm
-                           focus:outline-none focus:border-green-700"
-                  >{c.content}</textarea>
+                  <textarea name="content" required class="w-64 border border-green-900/20 rounded-lg p-2 text-sm
+                           focus:outline-none focus:border-green-700">{c.content}</textarea>
 
-                  <button
-                    type="submit"
-                    class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded-md text-sm"
-                  >
-                    Save
-                  </button>
+                  <button type="submit" class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded-md text-sm"
+                  > Save </button>
                 </form>
               </details>
 
@@ -182,35 +159,20 @@ const { data: comments } = await supabase
     <!-- Add comment -->
     <section class="mt-12">
       {user ? (
-        <form
-          action="/api/auth/comments/create"
-          method="post"
-          class="space-y-4"
-        >
+        <form action="/api/auth/comments/create" method="post"class="space-y-4">
           <input type="hidden" name="post_id" value={post.id} />
 
-          <textarea
-            name="content"
-            required
-            placeholder="Write your comment…"
+          <textarea name="content" required placeholder="Write your comment…"
             class="w-full border border-green-900/20 rounded-lg p-3
-                   focus:outline-none focus:border-green-700"
-          ></textarea>
+                   focus:outline-none focus:border-green-700"></textarea>
 
           <button
-            type="submit"
-            class="bg-green-700 hover:bg-green-800 text-white
-                   px-5 py-2 rounded-md"
-          >
-            Post comment
+            type="submit" class="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-md"> Post comment
           </button>
         </form>
       ) : (
         <p class="text-green-900/70">
-          <a href="/signin" class="underline text-green-800">
-            Sign in
-          </a>
-          to leave a comment.
+          <a href="/signin" class="underline text-green-800"> Sign in </a> to leave a comment.
         </p>
       )}
     </section>

@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase";
 
 export const prerender = false;
 
-// 1) Chequear sesión por cookies
+// Log in 
 const accessToken = Astro.cookies.get("sb-access-token")?.value;
 const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
 
@@ -12,7 +12,7 @@ if (!accessToken || !refreshToken) {
   return Astro.redirect("/signin");
 }
 
-// 2) Obtener user desde Supabase usando accessToken
+// Supabase
 const { data: userData, error: userError } = await supabase.auth.getUser(accessToken);
 const user = userData?.user;
 
@@ -20,7 +20,7 @@ if (userError || !user) {
   return Astro.redirect("/signin");
 }
 
-// 3) Traer posts del usuario (nuevo -> viejo)
+// latest post 
 const { data: posts, error } = await supabase
   .from("Post")
   .select("id, title, created_at")
@@ -37,13 +37,8 @@ const postsList = posts ?? [];
 
       <a
         href="/newpost"
-        class="ml-2 px-5 py-2 text-sm font-medium rounded-md
-                  bg-green-700 text-white
-                  hover:bg-green-800
-                  transition"
-      >
-        + New post
-      </a>
+        class="ml-2 px-5 py-2 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800 transition"
+      > + New post </a>
     </div>
 
 
@@ -53,11 +48,11 @@ const postsList = posts ?? [];
       </p>
     )}
 
-    <div class="mt-8 space-y-4">
+    <div class="mt-8 space-y-4 " >
       {postsList.length ? (
         postsList.map((p) => (
           <div
-            class="bg-white border border-green-900/10 rounded-xl p-5 flex items-center justify-between"
+            class="bg-white border border-green-900/10 rounded-xl p-5 flex items-center justify-between hover:bg-[#DAFFA8]"
           >
             <div>
               <p class="font-medium text-green-900">{p.title}</p>
@@ -67,12 +62,7 @@ const postsList = posts ?? [];
             </div>
 
             <div class="flex items-center gap-4">
-              <a
-                class="text-sm underline hover:text-green-700"
-                href={`/posts/${p.id}`}
-              >
-               Open
-              </a>
+              <a class="text-sm underline hover:text-green-700" href={`/posts/${p.id}`}> Open </a>
 
               <form action="/api/auth/posts/delete" method="post">
                 <input type="hidden" name="id" value={p.id} />

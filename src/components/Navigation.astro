@@ -4,8 +4,8 @@ const refreshToken = Astro.cookies.get("sb-refresh-token")?.value;
 const isLoggedIn = !!accessToken && !!refreshToken;
 ---
 
-<header class="bg-white shadow-sm">
-  <nav class="max-w-7xl mx-auto px-10 h-20 flex items-center justify-between">
+<header class="bg-white shadow-sm" >
+  <nav class="max-w-7xl mx-auto  px-10 h-20 flex items-center justify-between">
 
     <!-- Links -->
     <ul class="flex items-center gap-12 list-none text-lg text-green-900">
@@ -24,27 +24,20 @@ const isLoggedIn = !!accessToken && !!refreshToken;
       <li><a href="/posts" class="no-underline hover:underline">Posts</a></li>
 
       <li>
-        <a
-            href="/newpost"
-            class="ml-2 px-5 py-2 text-sm font-medium rounded-md
-                  bg-green-700 text-white
-                  hover:bg-green-800
+        <a href="/newpost"
+            class="ml-2 px-5 py-2 text-sm font-medium rounded-md bg-green-700 text-white hover:bg-green-800
                   transition"
-          >
-            Add New
-          </a>
+          > Add New
+        </a>
       </li>
     </ul>
 
-    <!-- Right: Search + User + Settings -->
+    <!-- Right side-->
     <div class="flex items-center gap-3 relative">
 
       <!-- Search -->
       <div class="relative flex items-center">
-        <button
-          id="search-btn"
-          aria-label="Search"
-          class="p-2 text-gray-500 hover:text-green-700 focus:outline-none"
+        <button id="search-btn" aria-label="Search" class="p-2 text-gray-500 hover:text-green-700 focus:outline-none"
           type="button"
         >
           <svg xmlns="http://www.w3.org/2000/svg"
@@ -57,13 +50,8 @@ const isLoggedIn = !!accessToken && !!refreshToken;
           </svg>
         </button>
 
-        <input
-          id="search-input"
-          type="text"
-          placeholder="Search posts..."
-          class="hidden ml-2 px-3 py-1 text-sm border border-green-900/30
-                 rounded focus:outline-none focus:border-green-700"
-        />
+        <input id="search-input" type="text" placeholder="Search posts..." class="hidden ml-2 px-3 py-1 text-sm border border-green-900/30
+                 rounded focus:outline-none focus:border-green-700"/>
       </div>
 
       <!-- User menu -->
@@ -90,7 +78,7 @@ const isLoggedIn = !!accessToken && !!refreshToken;
           </svg>
         </button>
 
-        <!-- Dropdown -->
+        <!-- user menu drop -->
         <div
           id="menu"
           class="hidden absolute top-full right-0 mt-2 w-44 bg-white border border-green-900/20 rounded shadow-sm z-50 overflow-hidden"
@@ -119,9 +107,6 @@ const isLoggedIn = !!accessToken && !!refreshToken;
           )}
         </div>
       </div>
-
-
-
     </div>
   </nav>
 </header>

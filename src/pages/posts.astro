@@ -15,23 +15,18 @@ if (error) {
 ---
 
 <Layout title="Posts">
-  <main class="max-w-4xl mx-auto px-6 py-14">
+  <main class="max-w-4xl mx-auto md:w-205 px-6 py-14">
     <h1 class="text-3xl font-semibold text-green-900">Last posts</h1>
     
 
     {error && (
-      <p class="mt-4 text-red-600">
-        Could not load posts.
-      </p>
+      <p class="mt-4 text-red-600"> Could not load posts. </p>
     )}
 
-    <div class="mt-10 space-y-6">
+    <div class="mt-10 space-y-6 ">
       {posts?.length ? (
         posts.map((p) => (
-          <a
-            href={`/posts/${p.id}`}
-            class="block bg-white border border-green-900/10 rounded-xl p-6
-                   hover:border-green-700 hover:shadow-sm transition"
+          <a href={`/posts/${p.id}`} class="block bg-white border border-green-900/10 rounded-xl p-6 hover:bg-[#DAFFA8] hover:shadow-sm transition"
           >
             <h2 class="text-xl font-semibold text-green-900">{p.title}</h2>
 
