@@ -22,7 +22,7 @@ const { data: profile } = await supabase
 
 const username = profile?.username ?? "your-username";
 
-// 3) Latest posts (owner posts)
+// 3) Latest posts 
 
 const { data: posts } = await supabase
   .from("Post")
